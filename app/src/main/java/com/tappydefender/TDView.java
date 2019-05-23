@@ -28,6 +28,8 @@ public class TDView extends SurfaceView implements Runnable
     private EnemyShip enemy1;
     private EnemyShip enemy2;
     private EnemyShip enemy3;
+    public EnemyShip enemy4;
+    public EnemyShip enemy5;
     public ArrayList<SpaceDust> dustList = new ArrayList<SpaceDust>();
 
     private float distanceRemaining;
@@ -103,6 +105,15 @@ public class TDView extends SurfaceView implements Runnable
         enemy2 = new EnemyShip(context, screenX, screenY);
         enemy3 = new EnemyShip(context, screenX, screenY);
 
+        if(screenX > 1000)
+        {
+            enemy4 = new EnemyShip(context, screenX, screenY);
+        }
+        if(screenX > 1200)
+        {
+            enemy5 = new EnemyShip(context, screenX, screenY);
+        }
+
         int numSpecs = 150;
         for (int i = 0; i < numSpecs; i++)
             dustList.add(new SpaceDust(screenX, screenY));
@@ -150,6 +161,22 @@ public class TDView extends SurfaceView implements Runnable
             enemy3.setX(-300);
             hitDetected = true;
         }
+        if(screenX > 1000)
+        {
+            if(Rect.intersects(player.getHitbox(), enemy4.getHitbox()))
+            {
+                hitDetected = true;
+                enemy4.setX(-100);
+            }
+        }
+        if(screenX > 1200)
+        {
+            if(Rect.intersects(player.getHitbox(), enemy5.getHitbox()))
+            {
+                hitDetected = true;
+                enemy5.setX(-100);
+            }
+        }
         if(hitDetected)
         {
             player.reduceShieldStrength();
@@ -191,41 +218,28 @@ public class TDView extends SurfaceView implements Runnable
             for (SpaceDust sd : dustList)
                 canvas.drawPoint(sd.getX(), sd.getY(), paint);
 
-            paint.setColor(Color.argb(255, 255, 255, 255));
-// Draw Hit boxes
-            canvas.drawRect(player.getHitbox().left,
-                    player.getHitbox().top,
-                    player.getHitbox().right,
-                    player.getHitbox().bottom,
-                    paint);
-            canvas.drawRect(enemy1.getHitbox().left,
-                    enemy1.getHitbox().top,
-                    enemy1.getHitbox().right,
-                    enemy1.getHitbox().bottom,
-                    paint);
-            canvas.drawRect(enemy2.getHitbox().left,
-                    enemy2.getHitbox().top,
-                    enemy2.getHitbox().right,
-                    enemy2.getHitbox().bottom,
-                    paint);
-            canvas.drawRect(enemy3.getHitbox().left,
-                    enemy3.getHitbox().top,
-                    enemy3.getHitbox().right,
-                    enemy3.getHitbox().bottom,
-                    paint);
-
             canvas.drawBitmap(player.getBitmap(), player.getX(), player.getY(), paint);
             canvas.drawBitmap(enemy1.getBitmap(), enemy1.getX(), enemy1.getY(), paint);
             canvas.drawBitmap(enemy2.getBitmap(), enemy2.getX(), enemy2.getY(), paint);
             canvas.drawBitmap(enemy3.getBitmap(), enemy3.getX(), enemy3.getY(), paint);
+            if(screenX > 1000)
+            {
+                canvas.drawBitmap(enemy4.getBitmap(),
+                        enemy4.getX(), enemy4.getY(), paint);
+            }
+            if(screenX > 1200)
+            {
+                canvas.drawBitmap(enemy5.getBitmap(),
+                        enemy5.getX(), enemy5.getY(), paint);
+            }
 
             if(!gameEnded)
             {
                 paint.setTextAlign(Paint.Align.LEFT);
                 paint.setColor(Color.argb(255, 255, 255, 255));
                 paint.setTextSize(40);
-                canvas.drawText("Fastest:" + fastestTime + "s", 10, 40, paint);
-                canvas.drawText("Time:" + timeTaken + "s", screenX / 2, 40,
+                canvas.drawText("Fastest:" + formatTime(fastestTime) + "s", 10, 40, paint);
+                canvas.drawText("Time:" + formatTime(timeTaken) + "s", screenX / 2, 40,
                         paint);
                 canvas.drawText("Distance:" +
                         distanceRemaining / 1000 +
@@ -243,8 +257,8 @@ public class TDView extends SurfaceView implements Runnable
                 canvas.drawText("Game Over", screenX/2, 100, paint);
                 paint.setTextSize(40);
                 canvas.drawText("Fastest:"+
-                        fastestTime + "s", screenX/2, 160, paint);
-                canvas.drawText("Time:" + timeTaken +
+                        formatTime(fastestTime) + "s", screenX/2, 160, paint);
+                canvas.drawText("Time:" + formatTime(timeTaken) +
                         "s", screenX / 2, 200, paint);
                 canvas.drawText("Distance remaining:" +
                         distanceRemaining/1000 + " KM",screenX/2, 240, paint);
@@ -295,5 +309,16 @@ public class TDView extends SurfaceView implements Runnable
                 break;
         }
         return true;
+    }
+
+    private String formatTime(long time)
+    {
+        long seconds = (time) / 1000;
+        long thousandths = (time) - (seconds * 1000);
+        String strThousandths = "" + thousandths;
+        if (thousandths < 100){strThousandths = "0" + thousandths;}
+        if (thousandths < 10){strThousandths = "0" + strThousandths;}
+        String stringTime = "" + seconds + "." + strThousandths;
+        return stringTime;
     }
 }
