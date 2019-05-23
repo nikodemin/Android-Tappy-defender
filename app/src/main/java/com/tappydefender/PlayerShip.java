@@ -11,6 +11,7 @@ public class PlayerShip
     private int x, y;
     private int speed;
     private boolean boosting;
+    private int shieldStrength;
 
     private final int GRAVITY = -12;
 
@@ -90,5 +91,15 @@ public class PlayerShip
     public void stopBoosting()
     {
         boosting = false;
+    }
+
+    public int getShieldStrength()
+    {
+        return shieldStrength;
+    }
+
+    public void reduceShieldStrength()
+    {
+        shieldStrength --;
     }
 }

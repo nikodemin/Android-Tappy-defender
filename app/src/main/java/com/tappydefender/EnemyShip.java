@@ -23,7 +23,22 @@ public class EnemyShip
 
     public EnemyShip(Context context, int screenX, int screenY)
     {
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.enemy);
+        Random generator = new Random();
+        int whichBitmap = generator.nextInt(3);
+        switch (whichBitmap)
+        {
+            case 0:
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.enemy3);
+                break;
+            case 1:
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.enemy2);
+                break;
+            case 2:
+                bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.enemy);
+                break;
+        }
+        bitmap = bitmap.createScaledBitmap(bitmap, (int)(bitmap.getWidth()*0.6),
+                (int)(bitmap.getHeight()*0.6), false);
 
         maxX = screenX;
         minX = 0;
@@ -31,7 +46,6 @@ public class EnemyShip
         maxY = screenY;
         minY = 0;
 
-        Random generator = new Random();
         speed = generator.nextInt(6)+10;
         x = screenX;
         y = generator.nextInt(maxY) - bitmap.getHeight();
